@@ -1,1 +1,279 @@
-# love-journey-
+# love-journey-                                                                                                                                                                                                         <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Love Journey 💕</title>
+
+<!-- GOOGLE FONTS -->
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ================= GLOBAL ================= */
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:'Quicksand',sans-serif;
+    background:linear-gradient(135deg,#ffe6f2,#ffd1e8,#ffb3d9);
+    overflow-x:hidden;
+}
+.page{
+    min-height:100vh;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+.page.active{display:flex}
+
+/* ================= BUTTON ================= */
+.btn{
+    margin-top:20px;
+    padding:14px 32px;
+    font-size:1.1em;
+    border:none;
+    border-radius:40px;
+    background:linear-gradient(45deg,#ff4d94,#ff1f7a);
+    color:#fff;
+    cursor:pointer;
+    box-shadow:0 10px 25px rgba(0,0,0,.3);
+    transition:.3s;
+}
+.btn:hover{transform:scale(1.05)}
+
+/* ================= PAGE 1 ================= */
+.title{
+    font-family:'Pacifico',cursive;
+    font-size:3em;
+    color:#ff1f7a;
+    text-align:center;
+}
+.subtitle{
+    margin-top:10px;
+    font-size:1.2em;
+    color:#444;
+    text-align:center;
+}
+.hearts{
+    font-size:2em;
+    animation:float 3s infinite ease-in-out;
+}
+@keyframes float{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-10px)}
+}
+
+/* ================= GAME ================= */
+.game-box{
+    background:#fff;
+    padding:20px;
+    border-radius:30px;
+    box-shadow:0 15px 40px rgba(0,0,0,.3);
+    max-width:380px;
+    width:100%;
+}
+.stats{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:15px;
+    font-weight:600;
+}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+.card{
+    height:70px;
+    background:#ffe6f2;
+    border-radius:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2em;
+    cursor:pointer;
+    transition:.3s;
+}
+.card.open{background:#ffb3d9}
+
+/* ================= LETTER ================= */
+.letter-box{
+    background:linear-gradient(135deg,#fff0f6,#ffe4ec);
+    border-radius:30px;
+    padding:20px;
+    box-shadow:0 15px 40px rgba(0,0,0,.3);
+    max-width:520px;
+    width:100%;
+    cursor:pointer;
+}
+.letter-scroll{
+    max-height:65vh;
+    overflow-y:auto;
+}
+.letter{
+    white-space:pre-line;
+    line-height:1.75;
+}
+
+/* ================= POETRY ================= */
+.poetry-box{
+    margin-top:20px;
+    padding:25px;
+    border-radius:35px;
+    background:#fff;
+    font-family:'Dancing Script',cursive;
+    font-size:1.6em;
+    color:#ff1f7a;
+    text-align:center;
+    box-shadow:0 15px 40px rgba(0,0,0,.35);
+    cursor:pointer;
+}
+.hidden{display:none}
+
+/* ================= FOOTER ================= */
+footer{
+    margin-top:30px;
+    font-size:.9em;
+    color:#666;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PAGE 1 -->
+<div class="page active" id="p1">
+    <div class="title">Our Love Journey 💕</div>
+    <div class="subtitle">From a small game to forever</div>
+    <div class="hearts">💖 💫 💞</div>
+    <button class="btn" onclick="go(2)">Start ➡️</button>
+</div>
+
+<!-- PAGE 2 GAME -->
+<div class="page" id="p2">
+    <div class="title">Memory Game 🎮</div>
+    <div class="game-box">
+        <div class="stats">
+            <span>Moves: <span id="moves">0</span></span>
+            <span>Remaining: <span id="remain">6</span></span>
+        </div>
+        <div class="grid" id="grid"></div>
+    </div>
+</div>
+
+<!-- PAGE 3 LETTER -->
+<div class="page" id="p3">
+    <div class="title">Tap to Open 💌</div>
+    <div class="letter-box" onclick="openLetter()">
+        <div class="letter-scroll">
+            <div class="letter" id="letterText">
+Tap here to read our story 💖
+            </div>
+        </div>
+    </div>
+    <button class="btn" onclick="go(4)">Next ➡️</button>
+</div>
+
+<!-- PAGE 4 POETRY -->
+<div class="page" id="p4">
+    <div class="title">Final Surprise 🌸</div>
+    <div class="poetry-box" onclick="showPoetry()" id="poetryBox">
+Tap to reveal poetry ✨
+    </div>
+    <div class="hidden" id="finalMsg">
+        <h2>Love you so much Begam 💕</h2>
+        <button class="btn" onclick="restart()">Start Over 🔄</button>
+    </div>
+</div>
+
+<footer>Made with love 💖</footer>
+
+<script>
+let page=1;
+function go(n){
+    document.getElementById('p'+page).classList.remove('active');
+    page=n;
+    document.getElementById('p'+page).classList.add('active');
+}
+
+/* GAME LOGIC */
+const emojis=['💖','💞','💘','🌸','🥰','✨'];
+let cards=[...emojis,...emojis].sort(()=>Math.random()-0.5);
+let first=null,lock=false,moves=0,match=0;
+
+const grid=document.getElementById('grid');
+cards.forEach(e=>{
+    const d=document.createElement('div');
+    d.className='card';
+    d.onclick=()=>{
+        if(lock||d.classList.contains('open'))return;
+        d.textContent=e; d.classList.add('open');
+        if(!first){first=d}
+        else{
+            lock=true; moves++; movesEl.textContent=moves;
+            if(first.textContent===d.textContent){
+                match++; remainEl.textContent=6-match;
+                first=null; lock=false;
+                if(match===6)setTimeout(()=>go(3),800);
+            }else{
+                setTimeout(()=>{
+                    first.textContent='';
+                    d.textContent='';
+                    first.classList.remove('open');
+                    d.classList.remove('open');
+                    first=null; lock=false;
+                },700);
+            }
+        }
+    };
+    grid.appendChild(d);
+});
+const movesEl=document.getElementById('moves');
+const remainEl=document.getElementById('remain');
+
+/* LETTER */
+const fullLetter=`💕 Hamari Love Story 💕
+
+Hamari love story kisi movie se shuru nahi hui 🎬❌
+Balkay ek choti si Ludo game se hui 🎲💛
+Us game mein jeet haar kam thi,
+Magar baatein bohat zyada jeet gayin 😊💬
+
+Wahan se GC bana 📱✨
+Phir dheere dheere DMs aaye 💌
+Aur bina pata chale hum dono
+Ek dusre ki aadat ban gaye 🫶💞
+
+Roz ki baatein 🌙
+Choti choti care 🥺💗
+Aur har muskurahat 😄
+Humein aur qareeb le aayi 💑🌸
+
+29 August 2025 📅❤️
+Woh din tha jab maine
+Apna dil tumhare hawale kar diya 💍🥰`;
+
+function openLetter(){
+    document.getElementById('letterText').textContent=fullLetter;
+}
+
+/* POETRY */
+function showPoetry(){
+    const box=document.getElementById('poetryBox');
+    box.innerHTML=`اچھـا لگتـــا ہــے تیـــرا نـام میـرے نـام کـے ســـاتــھ 🥹❤️‍🔥<br>
+جیسـے کوئـی صبـح جـڑی ہـو کسـی شـام کـے سـاتـھ 😌🫂`;
+    setTimeout(()=>{
+        box.style.display='none';
+        document.getElementById('finalMsg').classList.remove('hidden');
+    },10000);
+}
+
+/* RESET */
+function restart(){
+    location.reload();
+}
+</script>
+
+</body>
+</html>
